@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: media_app
+      MYSQL_USER: test
+      MYSQL_PASSWORD: 
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build: ./backend/api
+    container_name: backend-app
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: 
+      DB_NAME: media_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  soap-service:
+    build: ./soap-server
+    container_name: soap-service-app
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db
+
+volumes:
+  db_data:

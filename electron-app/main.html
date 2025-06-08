@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Wyszukiwarka filmów i seriali</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    input.search-input {
+      margin-bottom: 10px;
+      padding: 8px;
+      width: 100%;
+      max-width: 400px;
+      font-size: 16px;
+    }
+
+    #movies,
+    #tvshows {
+      max-height: 280px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 5px;
+    }
+
+    .item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Wyszukiwarka filmów i seriali</h1>
+  <button onclick="logout()">Wyloguj się</button>
+  <div class="section">
+    <h2>Eksport / Import danych Wiki</h2>
+    <button class="btn" onclick="exportWiki('json')">Eksportuj do JSON</button>
+    <button class="btn" onclick="exportWiki('xml')">Eksportuj do XML</button>
+    <input type="file" id="importJson" accept=".json" style="display:none"
+      onchange="importWiki('json', this.files[0])" />
+    <input type="file" id="importXml" accept=".xml" style="display:none" onchange="importWiki('xml', this.files[0])" />
+    <button class="btn" onclick="document.getElementById('importJson').click()">Importuj z JSON</button>
+    <button class="btn" onclick="document.getElementById('importXml').click()">Importuj z XML</button>
+  </div>
+  <div class="section" id="movies-section">
+    <h2>Filmy</h2>
+    <input type="text" id="movieSearch" class="search-input" placeholder="Szukaj filmów..." />
+    <div id="movies"></div>
+  </div>
+
+  <div class="section" id="tvshows-section">
+    <h2>Seriale</h2>
+    <input type="text" id="tvshowSearch" class="search-input" placeholder="Szukaj seriali..." />
+    <div id="tvshows"></div>
+  </div>
+
+  <div class="section">
+    <h2>Debug - szczegóły pobrane z wiki RESTAPI</h2>
+    <div id="details"></div>
+  </div>
+
+  <div class="section">
+  <h2>Twoje filmy i seriale</h2>
+  <div id="userMediaList"></div>
+</div>
+
+  <script>
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      window.location.href = 'index.html';
+    }
+
+    let moviesData = [];
+    let tvshowsData = [];
+
+    async function fetchContent(endpoint) {
+      try {
+        const res = await fetch(`http://localhost:3000/api/${endpoint}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.status === 401) {
+          alert('Sesja wygasła. Zaloguj się ponownie.');
+          logout();
+          return;
+        }
+
+        const data = await res.json();
+        if (endpoint === 'movies') {
+          moviesData = data;
+          displayList(data, 'movies');
+        } else if (endpoint === 'tvshows') {
+          tvshowsData = data;
+          displayList(data, 'tvshows');
+        }
+      } catch (err) {
+        console.error('Błąd pobierania:', err);
+        alert('Błąd połączenia z serwerem.');
+      }
+    }
+
+    function displayList(data, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      const limitedData = data.slice(0, 20);
+
+      limitedData.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+      <strong class="title">${item.title}</strong><br />
+      <em class="summary">${item.summary || 'brak opisu'}</em><br />
+      <button class="btn wiki-btn">Wikipedia</button>
+      <button class="btn translate-btn">Przetłumacz</button>
+    `;
+        container.appendChild(div);
+
+        div.querySelector('.wiki-btn').addEventListener('click', () => loadWiki(item.title, item));
+        div.querySelector('.translate-btn').addEventListener('click', () => translate(item.title, item.summary, div));
+      });
+    }
+
+
+
+    function getContentId(dataArray, title) {
+      let item = dataArray.find(item => item.title.toLowerCase() === title.toLowerCase());
+      if (item) return item.id;
+
+      item = dataArray.find(item => title.toLowerCase().includes(item.title.toLowerCase()));
+      if (item) return item.id;
+
+      console.warn('Nie znaleziono dopasowania do:', title);
+      return null;
+    }
+
+    async function saveWikiEntry(entry) {
+      try {
+        const res = await fetch('http://localhost:3000/api/user/wiki', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(entry),
+        });
+
+        if (!res.ok) throw new Error('Nie udało się zapisać wpisu');
+
+        const data = await res.json();
+        alert('Wpis Wiki został zapisany');
+      } catch (err) {
+        console.error(err);
+        alert('Błąd zapisu Wiki: ' + err.message);
+      }
+    }
+
+    function filterList(searchTerm, data, containerId) {
+      const filtered = data.filter(item =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      displayList(filtered, containerId);
+    }
+
+    document.getElementById('movieSearch').addEventListener('input', e => {
+      filterList(e.target.value, moviesData, 'movies');
+    });
+
+    document.getElementById('tvshowSearch').addEventListener('input', e => {
+      filterList(e.target.value, tvshowsData, 'tvshows');
+    });
+
+    async function loadWiki(title, sourceItem) {
+      try {
+        let endpoint = '';
+
+        const isMovie = moviesData.some(m => m.title.toLowerCase() === title.toLowerCase());
+        const isTV = tvshowsData.some(tv => tv.title.toLowerCase() === title.toLowerCase());
+
+        if (isMovie) {
+          endpoint = `wiki/movie/${encodeURIComponent(title)}`;
+        } else if (isTV) {
+          endpoint = `wiki/tv/${encodeURIComponent(title)}`;
+        } else {
+          document.getElementById('details').innerHTML = '<p>Nieznany typ - nie można pobrać opisu z Wikipedii.</p>';
+          return;
+        }
+
+        const res = await fetch(`http://localhost:3000/api/${endpoint}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.status === 401) {
+          alert('Brak autoryzacji. Zaloguj się ponownie.');
+          logout();
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error('Nie znaleziono opisu na Wikipedii.');
+        }
+
+        const data = await res.json();
+
+        const cleanedTitle = cleanTitle(decodeURIComponent(data.title));
+
+        document.getElementById('details').innerHTML = `
+      <h3>${cleanedTitle}</h3>
+      <p><em>${data.description || ''}</em></p>
+      <p>${data.extract}</p>
+      <a href="${data.url}" target="_blank" rel="noopener noreferrer">Zobacz na Wikipedii</a>
+    `;
+
+        const detailsDiv = document.getElementById('details');
+
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Zapisz wpis Wiki';
+        saveBtn.className = 'btn';
+        saveBtn.style.marginTop = '10px';
+
+        saveBtn.onclick = () => {
+          const entry = {
+            title: cleanTitle(sourceItem.title),
+            description: data.description || '',
+            extract: data.extract || '',
+            url: data.url,
+            movieId: getContentId(moviesData, sourceItem.title),
+            tvshowId: getContentId(tvshowsData, sourceItem.title),
+          };
+          saveWikiEntry(entry);
+        };
+
+        updateSummaryInData(sourceItem.title, data.extract || '');
+
+        displayList(moviesData, 'movies');
+        displayList(tvshowsData, 'tvshows');
+
+      } catch (err) {
+        document.getElementById('details').innerHTML = `<p>Błąd pobierania danych z Wikipedii: ${err.message}</p>`;
+        console.error(err);
+      }
+    }
+    function cleanTitle(title) {
+  return title.toLowerCase().trim();
+}
+
+    function normalize(str) {
+  return str.toLowerCase().replace(/\s+/g, ' ').replace(/[–—−]/g, '-').trim();
+}
+
+function updateSummaryInData(title, newSummary) {
+  const decodedTitle = decodeURIComponent(title);
+
+  const updateInArray = (arr) => {
+    const item = arr.find(i => normalize(i.title) === normalize(decodedTitle));
+    if (item) {
+      item.summary = newSummary;
+      console.log(`Dopasowano i przypisano opis do: ${item.title}`);
+      return true;
+    }
+    return false;
+  };
+
+  if (!updateInArray(moviesData)) {
+    if (!updateInArray(tvshowsData)) {
+      console.warn(`Nie udało się dopasować do żadnego wpisu: ${decodedTitle}`);
+    }
+  }
+}
+    async function translate(title) {
+      const targetLang = 'pl';
+
+      const findSummary = () => {
+        let item = moviesData.find(i => i.title.toLowerCase() === title.toLowerCase());
+        if (!item) item = tvshowsData.find(i => i.title.toLowerCase() === title.toLowerCase());
+        return item ? item.summary || '' : '';
+      };
+
+      const summary = findSummary();
+
+      if (!summary) {
+        document.getElementById('details').innerHTML = '<p>Brak opisu do tłumaczenia.</p>';
+        return;
+      }
+
+      try {
+        const soapBody = `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tran="http://example.com/translator" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <soapenv:Body>
+          <tran:translate>
+            <text xsi:type="xsd:string">${escapeXml(summary)}</text>
+            <targetLang xsi:type="xsd:string">${targetLang}</targetLang>
+          </tran:translate>
+        </soapenv:Body>
+      </soapenv:Envelope>`;
+
+        const res = await fetch('http://localhost:8001/translator', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/xml;charset=UTF-8',
+            'SOAPAction': 'translate',
+          },
+          body: soapBody,
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error('SOAP error response:', errorText);
+          throw new Error(`Błąd SOAP: ${res.status}`);
+        }
+
+        const textResponse = await res.text();
+
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(textResponse, "application/xml");
+
+        const ns = 'http://example.com/translator';
+        const translatedNode = xmlDoc.getElementsByTagNameNS(ns, 'translatedText')[0];
+        const translated = translatedNode ? translatedNode.textContent : null;
+
+        if (!translated) throw new Error('Brak elementu <translatedText> w odpowiedzi');
+        if (translated === '[Error translating]') throw new Error('Serwer zwrócił błąd tłumaczenia');
+
+        ['movies', 'tvshows'].forEach(containerId => {
+          const container = document.getElementById(containerId);
+          if (!container) return;
+
+          container.querySelectorAll('.item').forEach(itemDiv => {
+            const titleEl = itemDiv.querySelector('.title');
+            if (!titleEl) return;
+
+            if (titleEl.textContent.trim().toLowerCase() === title.trim().toLowerCase()) {
+              const summaryEl = itemDiv.querySelector('.summary');
+              if (summaryEl) {
+                summaryEl.textContent = translated;
+              }
+            }
+          });
+        });
+
+
+        function escapeXml(unsafe) {
+          return unsafe.replace(/[<>&'"]/g, function (c) {
+            switch (c) {
+              case '<': return '&lt;';
+              case '>': return '&gt;';
+              case '&': return '&amp;';
+              case '\'': return '&apos;';
+              case '"': return '&quot;';
+            }
+          });
+        }
+
+        updateSummaryInData(title, translated);
+
+        document.getElementById('details').innerHTML = `<h3>Przetłumaczono opis</h3><p>${translated}</p>`;
+        const detailsDiv = document.getElementById('details');
+
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Zapisz wpis Wiki';
+        saveBtn.className = 'btn';
+        saveBtn.style.marginTop = '10px';
+
+        saveBtn.onclick = () => {
+          const entry = {
+            title: title,
+            description: '',
+            extract: translated,
+            url: '',
+            movieId: moviesData.some(m => m.title.toLowerCase() === title.toLowerCase()) ? getContentId(moviesData, title) : null,
+            tvshowId: tvshowsData.some(tv => tv.title.toLowerCase() === title.toLowerCase()) ? getContentId(tvshowsData, title) : null,
+          };
+          saveWikiEntry(entry);
+        };
+
+        detailsDiv.appendChild(saveBtn);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('details').innerHTML = `<p>Błąd tłumaczenia: ${err.message}</p>`;
+      }
+    }
+
+
+
+    function importWiki(format, file) {
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      let endpoint;
+      if (format === 'xml') {
+        endpoint = 'import-movies';
+      } else if (format === 'json') {
+        endpoint = 'import-series';
+      } else {
+        alert('Nieobsługiwany format importu');
+        return;
+      }
+
+      fetch(`http://localhost:3000/api/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      })
+        .then(res => {
+          if (!res.ok) throw new Error(`Błąd importu (${res.status})`);
+          return res.json();
+        })
+        .then(data => {
+          alert(`Import zakończony: ${data.message || 'Sukces'}`);
+          fetchContent('movies');
+          fetchContent('tvshows');
+        })
+        .catch(err => {
+          console.error(err);
+          alert(`Błąd importu: ${err.message}`);
+        });
+    }
+
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch {
+        return null;
+      }
+    }
+
+    const userData = parseJwt(token);
+    const currentUserId = userData ? userData.id : null;
+
+    async function exportWiki(format) {
+      if (!currentUserId || !token) {
+        alert('Brak autoryzacji. Zaloguj się ponownie.');
+        logout();
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/export-user-media/${currentUserId}?format=${format}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error(`Błąd eksportu (${res.status})`);
+
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `media_export.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error(err);
+        alert(`Błąd eksportu: ${err.message}`);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    }
+
+    fetchContent('movies');
+    fetchContent('tvshows');
+
+
+
+async function loadUserMedia() {
+  const token = localStorage.getItem('token');
+  const userData = parseJwt(token);
+  const currentUserId = userData?.id;
+
+  if (!currentUserId) return;
+
+  const res = await fetch(`http://localhost:3000/api/user-media/${currentUserId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await res.json();
+  console.log('Loaded user media:', data);
+  displayUserMedia(data);
+}
+
+
+function displayUserMedia(data, containerId = 'userMediaList') {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    container.innerHTML = '<p>Brak wyników.</p>';
+    return;
+  }
+
+  data.forEach(item => {
+    const media = item.movie || item.tvshow;
+    const wiki = item.wikiEntry;
+
+    const title = media?.title || 'Nieznany tytuł';
+    const description = wiki?.extract || media?.summary || 'Brak opisu'; // <-- ważne
+    const wikiUrl = wiki?.url || '#';
+
+    const entry = document.createElement('div');
+    entry.className = 'media-entry';
+    entry.innerHTML = `
+      <h3>${title}</h3>
+      <p>${description}</p>
+      ${wiki?.url ? `<a href="${wikiUrl}" target="_blank">Wikipedia</a>` : ''}
+    `;
+
+    container.appendChild(entry);
+  });
+}
+loadUserMedia();
+
+  </script>
+</body>
+
+</html>

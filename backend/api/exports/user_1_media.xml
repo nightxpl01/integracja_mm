@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entries>
+  <entry>
+    <userId>1</userId>
+    <movie/>
+    <tvshow>
+      <id>9</id>
+      <title>Babylon 5</title>
+      <metascore>55</metascore>
+      <release_date/>
+      <sort_no>2459</sort_no>
+      <summary/>
+      <user_score>8.7</user_score>
+    </tvshow>
+    <wikiEntry>
+      <id>1</id>
+      <title>Babylon 5</title>
+      <description>American space opera television series (1994–1998)</description>
+      <extract>Babylon 5 is an American space opera television series created by writer and producer J. Michael Straczynski, under the Babylonian Productions label, in association with Straczynski's Synthetic Worlds Ltd. and Warner Bros. Domestic Television. After the successful airing of a test pilot movie on February 22, 1993, Babylon 5: The Gathering, Warner Bros. commissioned the series for production in May 1993 as part of its Prime Time Entertainment Network (PTEN). The show premiered in the United States on January 26, 1994, and ran for five 22-episode seasons.</extract>
+      <url>https://en.wikipedia.org/wiki/Babylon_5</url>
+    </wikiEntry>
+  </entry>
+  <entry>
+    <userId>1</userId>
+    <movie/>
+    <tvshow>
+      <id>9</id>
+      <title>Babylon 5</title>
+      <metascore>55</metascore>
+      <release_date/>
+      <sort_no>2459</sort_no>
+      <summary/>
+      <user_score>8.7</user_score>
+    </tvshow>
+    <wikiEntry>
+      <id>2</id>
+      <title>Babylon 5</title>
+      <description/>
+      <extract>Babylon 5 to amerykańska serial telewizyjna oper kosmicznych stworzona przez pisarza i producenta J. Michaela Straczyńskiego, pod marką Babilonian Productions, we współpracy z Synthetic Worlds Ltd. Syntetic Worlds Straczyński i Warner Bros.. Po udanym emisji filmu testowego 22 lutego 1993 r., Babilon 5: The Gathering, Warner Bros. zlecił serię produkcji w maju 1993 r. W ramach sieci Prime Time Entertainment Network (PTEN). Premiera programu odbyła się w Stanach Zjednoczonych 26 stycznia 1994 r. I trwała pięć 22 sezonów.</extract>
+      <url/>
+    </wikiEntry>
+  </entry>
+  <entry>
+    <userId>1</userId>
+    <movie/>
+    <tvshow>
+      <id>21</id>
+      <title>Taxi</title>
+      <metascore>77</metascore>
+      <release_date/>
+      <sort_no>761</sort_no>
+      <summary/>
+      <user_score>8</user_score>
+    </tvshow>
+    <wikiEntry>
+      <id>3</id>
+      <title>Taxi</title>
+      <description>Type of vehicle for hire with a driver</description>
+      <extract>A taxi, also known as a taxicab or simply a cab, is a type of vehicle for hire with a driver, used by a single passenger or small group of passengers, often for a non-shared ride. A taxicab conveys passengers between locations of their choice. This differs from public transport where the pick-up and drop-off locations are decided by the service provider, not by the customers, although demand responsive transport and share taxis provide a hybrid bus/taxi mode.</extract>
+      <url>https://en.wikipedia.org/wiki/Taxi</url>
+    </wikiEntry>
+  </entry>
+  <entry>
+    <userId>1</userId>
+    <movie/>
+    <tvshow>
+      <id>27</id>
+      <title>Clerks</title>
+      <metascore>47</metascore>
+      <release_date/>
+      <sort_no>2899</sort_no>
+      <summary/>
+      <user_score>7</user_score>
+    </tvshow>
+    <wikiEntry>
+      <id>4</id>
+      <title>Clerks (film)</title>
+      <description>1994 film by Kevin Smith</description>
+      <extract>Clerks is a 1994 American black-and-white comedy film written and directed by Kevin Smith in his feature directorial debut. Starring Smith alongside Brian O'Halloran, Jeff Anderson, Marilyn Ghigliotti, Lisa Spoonauer, Jason Mewes, and Scott Mosier, it presents a day in the lives of store clerks Dante Hicks (O'Halloran) and Randal Graves (Anderson) as well as their acquaintances. It is the first of Smith's View Askewniverse films, and introduces several recurring characters, notably Jay and Silent Bob.</extract>
+      <url>https://en.wikipedia.org/wiki/Clerks_(film)</url>
+    </wikiEntry>
+  </entry>
+  <entry>
+    <userId>1</userId>
+    <movie>
+      <id>500001</id>
+      <title>Invictus</title>
+      <metascore>74</metascore>
+      <rating>PG-13</rating>
+      <release_date/>
+      <sort_no>3239</sort_no>
+      <summary/>
+      <user_score>7.1</user_score>
+    </movie>
+    <tvshow/>
+    <wikiEntry>
+      <id>5</id>
+      <title>Invictus (film)</title>
+      <description>2009 biographical sports drama film</description>
+      <extract>Invictus is a 2009 docudrama sports film directed by Clint Eastwood and starring Morgan Freeman and Matt Damon, making it the third collaboration between Eastwood and Freeman after Unforgiven (1992) and Million Dollar Baby (2004). The story is based on the 2008 John Carlin book Playing the Enemy: Nelson Mandela and the Game That Made a Nation about the events in South Africa before and during the 1995 Rugby World Cup. The Springboks were not expected to perform well, the team having only recently returned to high-level international competition following the dismantling of apartheid—the country was hosting the World Cup, thus earning an automatic entry. Freeman portrays South African President Nelson Mandela while Damon played Francois Pienaar, the captain of the Springboks, the South Africa rugby union team.</extract>
+      <url>https://en.wikipedia.org/wiki/Invictus_(film)</url>
+    </wikiEntry>
+  </entry>
+  <entry>
+    <userId>1</userId>
+    <movie>
+      <id>500000</id>
+      <title>Star Trek</title>
+      <metascore>82</metascore>
+      <rating>PG-13</rating>
+      <release_date/>
+      <sort_no>1179</sort_no>
+      <summary/>
+      <user_score>7.8</user_score>
+    </movie>
+    <tvshow/>
+    <wikiEntry>
+      <id>6</id>
+      <title>Star Trek Beyond</title>
+      <description>2016 film by Justin Lin</description>
+      <extract>Star Trek Beyond is a 2016 American science fiction action film directed by Justin Lin, written by Simon Pegg and Doug Jung. It is the 13th film in the Star Trek franchise and the third installment in the reboot series, following Star Trek (2009) and Star Trek Into Darkness (2013). Chris Pine and Zachary Quinto reprise their respective roles as Captain James T. Kirk and Commander Spock, with Pegg, Karl Urban, Zoe Saldaña, John Cho, and Anton Yelchin reprising their roles from the previous films. Idris Elba, Sofia Boutella, Joe Taslim, and Lydia Wilson also appear.</extract>
+      <url>https://en.wikipedia.org/wiki/Star_Trek_Beyond</url>
+    </wikiEntry>
+  </entry>
+  <entry>
+    <userId>1</userId>
+    <movie>
+      <id>500003</id>
+      <title>Shutter Island</title>
+      <metascore>63</metascore>
+      <rating>R</rating>
+      <release_date/>
+      <sort_no>7078</sort_no>
+      <summary/>
+      <user_score>8.5</user_score>
+    </movie>
+    <tvshow/>
+    <wikiEntry>
+      <id>7</id>
+      <title>Shutter Island (film)</title>
+      <description>2010 film by Martin Scorsese</description>
+      <extract>Shutter Island is a 2010 American neo-noir psychological thriller film directed by Martin Scorsese. It is adapted by Laeta Kalogridis from the 2003 novel of the same name by Dennis Lehane, about a Deputy U.S. Marshal who comes to Shutter Island to investigate a psychiatric facility after one of the patients goes missing. It stars Leonardo DiCaprio and Mark Ruffalo, with Ben Kingsley, Max von Sydow and Michelle Williams in supporting roles.</extract>
+      <url>https://en.wikipedia.org/wiki/Shutter_Island_(film)</url>
+    </wikiEntry>
+  </entry>
+  <entry>
+    <userId>1</userId>
+    <movie>
+      <id>500002</id>
+      <title>Avatar</title>
+      <metascore>83</metascore>
+      <rating>PG-13</rating>
+      <release_date/>
+      <sort_no>1019</sort_no>
+      <summary/>
+      <user_score>7.5</user_score>
+    </movie>
+    <tvshow/>
+    <wikiEntry>
+      <id>8</id>
+      <title>Avatar (2009 film)</title>
+      <description>Film by James Cameron</description>
+      <extract>Avatar is a 2009 epic science fiction film co-produced, co-edited, written, and directed by James Cameron. It features an ensemble cast including Sam Worthington, Zoe Saldana, Stephen Lang, Michelle Rodriguez, and Sigourney Weaver. The first installment in the Avatar film series, it is set in the mid-22nd century, when humans are colonizing Pandora, a lush habitable moon of a gas giant in the Alpha Centauri star system, in order to mine the valuable unobtanium, a room-temperature superconductor mineral. The expansion of the mining colony threatens the continued existence of a local tribe of Na'vi, a humanoid species indigenous to Pandora. The title of the film refers to a genetically engineered Na'vi body operated from the brain of a remotely located human that is used to interact with the natives of Pandora called an "Avatar".</extract>
+      <url>https://en.wikipedia.org/wiki/Avatar_(2009_film)</url>
+    </wikiEntry>
+  </entry>
+  <entry>
+    <userId>1</userId>
+    <movie>
+      <id>500000</id>
+      <title>Star Trek</title>
+      <metascore>82</metascore>
+      <rating>PG-13</rating>
+      <release_date/>
+      <sort_no>1179</sort_no>
+      <summary/>
+      <user_score>7.8</user_score>
+    </movie>
+    <tvshow/>
+    <wikiEntry>
+      <id>10</id>
+      <title>List of Star Trek films</title>
+      <description/>
+      <extract>Star Trek is an American science fiction media franchise that started with a television series created by Gene Roddenberry. The series was first broadcast from 1966 to 1969. Since then, the Star Trek canon has expanded to include many other series, a film franchise, and other media.</extract>
+      <url>https://en.wikipedia.org/wiki/List_of_Star_Trek_films</url>
+    </wikiEntry>
+  </entry>
+</entries>

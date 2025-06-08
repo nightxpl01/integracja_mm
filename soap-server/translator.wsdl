@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="TranslatorService"
+  targetNamespace="http://example.com/translator"
+  xmlns:tns="http://example.com/translator"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+  <message name="TranslateRequest">
+    <part name="text" type="xsd:string"/>
+    <part name="targetLang" type="xsd:string"/>
+  </message>
+
+  <message name="TranslateResponse">
+    <part name="translatedText" type="xsd:string"/>
+  </message>
+
+  <portType name="TranslatorPortType">
+    <operation name="translate">
+      <input message="tns:TranslateRequest"/>
+      <output message="tns:TranslateResponse"/>
+    </operation>
+  </portType>
+
+  <binding name="TranslatorBinding" type="tns:TranslatorPortType">
+    <soap:binding style="rpc"
+      transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="translate">
+      <soap:operation soapAction="translate"/>
+      <input>
+        <soap:body use="encoded" namespace="http://example.com/translator" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="http://example.com/translator" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+  </binding>
+
+  <service name="TranslatorService">
+    <port name="TranslatorPort" binding="tns:TranslatorBinding">
+      <soap:address location="http://localhost:8001/translator"/>
+    </port>
+  </service>
+</definitions>

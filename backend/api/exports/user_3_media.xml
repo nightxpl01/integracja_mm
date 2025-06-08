@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entries>
+  <entry>
+    <userId>3</userId>
+    <movie>
+      <id>500001</id>
+      <title>Invictus</title>
+      <metascore>74</metascore>
+      <rating>PG-13</rating>
+      <release_date/>
+      <sort_no>3239</sort_no>
+      <summary/>
+      <user_score>7.1</user_score>
+    </movie>
+    <tvshow/>
+    <wikiEntry>
+      <id>2</id>
+      <title>Invictus (film)</title>
+      <description>2009 biographical sports drama film</description>
+      <extract>Invictus is a 2009 docudrama sports film directed by Clint Eastwood and starring Morgan Freeman and Matt Damon, making it the third collaboration between Eastwood and Freeman after Unforgiven (1992) and Million Dollar Baby (2004). The story is based on the 2008 John Carlin book Playing the Enemy: Nelson Mandela and the Game That Made a Nation about the events in South Africa before and during the 1995 Rugby World Cup. The Springboks were not expected to perform well, the team having only recently returned to high-level international competition following the dismantling of apartheid—the country was hosting the World Cup, thus earning an automatic entry. Freeman portrays South African President Nelson Mandela while Damon played Francois Pienaar, the captain of the Springboks, the South Africa rugby union team.</extract>
+      <url>https://en.wikipedia.org/wiki/Invictus_(film)</url>
+    </wikiEntry>
+  </entry>
+</entries>

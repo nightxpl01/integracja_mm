@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Logowanie / Rejestracja</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    form { margin-bottom: 20px; }
+    input { display: block; margin: 10px 0; padding: 8px; width: 200px; }
+    button { padding: 10px 20px; }
+    #switch { margin-top: 20px; cursor: pointer; color: blue; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <h2 id="formTitle">Logowanie</h2>
+  <form id="authForm">
+    <input type="text" id="username" placeholder="Nazwa użytkownika" required />
+    <input type="password" id="password" placeholder="Hasło" required />
+    <button type="submit">Zaloguj</button>
+  </form>
+  <p id="message"></p>
+  <p id="switch">Nie masz konta? Zarejestruj się</p>
+
+  <script>
+    let isLogin = true;
+
+    const form = document.getElementById("authForm");
+    const message = document.getElementById("message");
+    const title = document.getElementById("formTitle");
+    const switchText = document.getElementById("switch");
+    const button = form.querySelector("button");
+
+    switchText.addEventListener("click", () => {
+      isLogin = !isLogin;
+      title.textContent = isLogin ? "Logowanie" : "Rejestracja";
+      button.textContent = isLogin ? "Zaloguj" : "Zarejestruj";
+      switchText.textContent = isLogin ? "Nie masz konta? Zarejestruj się" : "Masz już konto? Zaloguj się";
+      message.textContent = "";
+    });
+
+    form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
+
+  try {
+    const res = await fetch("http://localhost:3000" + endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      message.textContent = isLogin ? "Zalogowano pomyślnie!" : "Rejestracja udana! Możesz się zalogować.";
+      if (isLogin) {
+        localStorage.setItem("token", data.token);
+        window.location.href = "main.html";
+      }
+    } else {
+      message.textContent = data.error || "Wystąpił błąd";
+    }
+  } catch (err) {
+    message.textContent = "Błąd połączenia z serwerem.";
+  }
+});
+
+
+if (localStorage.getItem("token")) {
+  window.location.href = "main.html";
+}
+  </script>
+
+</body>
+</html>
